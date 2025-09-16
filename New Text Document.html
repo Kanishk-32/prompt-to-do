@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 Ultimate Smart Prompt Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+        /* Animated background particles */
+        
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float-particle 15s infinite linear;
+        }
+        
+        @keyframes float-particle {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: title-glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes title-glow {
+            0% {
+                text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            }
+            100% {
+                text-shadow: 2px 2px 20px rgba(255, 255, 255, 0.8);
+            }
+        }
+        
+        .header p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+        
+        .header .subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+        
+        .prompt-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 35px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .prompt-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fff, transparent);
+            animation: scan 3s infinite;
+        }
+        
+        @keyframes scan {
+            0% {
+                left: -100%;
+            }
+            100% {
+                left: 100%;
+            }
+        }
+        
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .prompt-input {
+            width: 100%;
+            padding: 18px 25px;
+            font-size: 1.2rem;
+            border: 2px solid transparent;
+            border-radius: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            outline: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
+        }
+        
+        .prompt-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+            transform: scale(1.02);
+        }
+        
+        .input-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin-top: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 100;
+        }
+        
+        .suggestion-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            transition: background 0.2s;
+        }
+        
+        .suggestion-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .execute-btn,
+        .voice-btn,
+        .random-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .voice-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+        }
+        
+        .random-btn {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+        }
+        
+        .execute-btn:hover,
+        .voice-btn:hover,
+        .random-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+        
+        .execute-btn::before,
+        .voice-btn::before,
+        .random-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+        
+        .execute-btn:hover::before,
+        .voice-btn:hover::before,
+        .random-btn:hover::before {
+            left: 100%;
+        }
+        
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .content-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: rotate 4s linear infinite;
+            opacity: 0;
+        }
+        
+        .content-card:hover::before {
+            opacity: 1;
+        }
+        
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .content-card h3 {
+            margin-bottom: 15px;
+            color: #f8f8f8;
+            font-size: 1.3rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .content-card p {
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
+        }
+        
+        .content-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .response-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .response-message {
+            color: white;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .response-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+        /* Enhanced Animations */
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .spin {
+            animation: spin 2s linear infinite;
+        }
+        
+        .dance {
+            animation: dance 1s ease-in-out infinite;
+        }
+        
+        .bounce {
+            animation: bounce 1.5s ease-in-out infinite;
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        .wobble {
+            animation: wobble 1.5s ease-in-out infinite;
+        }
+        
+        .glitch {
+            animation: glitch 2s linear infinite;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        .zoom-in {
+            animation: zoomIn 0.6s ease-out;
+        }
+        
+        .slide-in {
+            animation: slideIn 0.8s ease-out;
+        }
+        
+        .flip {
+            animation: flip 1s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-15px);
+            }
+        }
+        
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes dance {
+            0%,
+            100% {
+                transform: translateX(0) rotate(0deg);
+            }
+            25% {
+                transform: translateX(-15px) rotate(-8deg);
+            }
+            50% {
+                transform: translateX(0) rotate(0deg);
+            }
+            75% {
+                transform: translateX(15px) rotate(8deg);
+            }
+        }
+        
+        @keyframes bounce {
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-25px) scale(1.1);
+            }
+        }
+        
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-15px);
+            }
+            75% {
+                transform: translateX(15px);
+            }
+        }
+        
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.08);
+            }
+        }
+        
+        @keyframes wobble {
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+            15% {
+                transform: rotate(-8deg);
+            }
+            30% {
+                transform: rotate(8deg);
+            }
+            45% {
+                transform: rotate(-5deg);
+            }
+            60% {
+                transform: rotate(5deg);
+            }
+            75% {
+                transform: rotate(-2deg);
+            }
+        }
+        
+        @keyframes glitch {
+            0%,
+            100% {
+                transform: translate(0);
+                filter: hue-rotate(0deg);
+            }
+            10% {
+                transform: translate(-3px, -3px);
+                filter: hue-rotate(90deg);
+            }
+            20% {
+                transform: translate(3px, 3px);
+                filter: hue-rotate(180deg);
+            }
+            30% {
+                transform: translate(-2px, 2px);
+                filter: hue-rotate(270deg);
+            }
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes flip {
+            0%,
+            100% {
+                transform: perspective(400px) rotateY(0);
+            }
+            50% {
+                transform: perspective(400px) rotateY(180deg);
+            }
+        }
+        /* Enhanced Theme Effects */
+        
+        .rainbow-bg {
+            background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #8f00ff) !important;
+            background-size: 400% 400% !important;
+            animation: rainbow-move 3s ease infinite;
+        }
+        
+        .fire-bg {
+            background: linear-gradient(45deg, #ff4757, #ff6b35, #ff9f43, #ffc048) !important;
+            background-size: 400% 400% !important;
+            animation: fire-flicker 1.5s ease-in-out infinite alternate;
+        }
+        
+        .ocean-bg {
+            background: linear-gradient(45deg, #0077be, #00a8cc, #0abde3, #48cae4) !important;
+            background-size: 400% 400% !important;
+            animation: ocean-wave 4s ease-in-out infinite;
+        }
+        
+        .space-bg {
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f3460 70%, #000 100%) !important;
+        }
+        
+        .galaxy-bg {
+            background: radial-gradient(ellipse at center, #2b1055 0%, #7597de 50%, #fbc2eb 100%) !important;
+        }
+        
+        .sunset-bg {
+            background: linear-gradient(135deg, #ff9a56 0%, #ffad56 25%, #ff6b95 50%, #c44569 75%, #f8b500 100%) !important;
+        }
+        
+        .aurora-bg {
+            background: linear-gradient(135deg, #00c9ff 0%, #92fe9d 25%, #00c9ff 50%, #92fe9d 75%, #00c9ff 100%) !important;
+            background-size: 400% 400% !important;
+            animation: aurora-dance 6s ease-in-out infinite;
+        }
+        
+        @keyframes rainbow-move {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+        
+        @keyframes fire-flicker {
+            0% {
+                background-position: 0% 50%;
+                filter: brightness(1) saturate(1.2);
+            }
+            100% {
+                background-position: 100% 50%;
+                filter: brightness(1.3) saturate(1.5);
+            }
+        }
+        
+        @keyframes ocean-wave {
+            0%,
+            100% {
+                background-position: 0% 50%;
+            }
+            25% {
+                background-position: 25% 75%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            75% {
+                background-position: 75% 25%;
+            }
+        }
+        
+        @keyframes aurora-dance {
+            0%,
+            100% {
+                background-position: 0% 0%;
+            }
+            33% {
+                background-position: 100% 100%;
+            }
+            66% {
+                background-position: 0% 100%;
+            }
+        }
+        /* Color Themes */
+        
+        .red-theme {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #ff4757 100%) !important;
+        }
+        
+        .blue-theme {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #00cec9 100%) !important;
+        }
+        
+        .green-theme {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 50%, #55a3ff 100%) !important;
+        }
+        
+        .yellow-theme {
+            background: linear-gradient(135deg, #fdcb6e 0%, #f39c12 50%, #e17055 100%) !important;
+        }
+        
+        .purple-theme {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 50%, #fd79a8 100%) !important;
+        }
+        
+        .pink-theme {
+            background: linear-gradient(135deg, #fd79a8 0%, #e84393 50%, #ff6b9d 100%) !important;
+        }
+        /* Special Effects */
+        
+        .neon-glow {
+            box-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor, 0 0 20px currentColor, 0 0 35px currentColor !important;
+            text-shadow: 0 0 10px currentColor !important;
+        }
+        
+        .giant {
+            transform: scale(1.3) !important;
+        }
+        
+        .tiny {
+            transform: scale(0.6) !important;
+        }
+        
+        .blur-effect {
+            filter: blur(3px);
+        }
+        
+        .hidden {
+            opacity: 0 !important;
+            pointer-events: none;
+        }
+        
+        .matrix-effect {
+            font-family: 'Courier New', monospace;
+            color: #00ff41 !important;
+            text-shadow: 0 0 10px #00ff41;
+        }
+        /* Canvas for advanced particles */
+        
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        /* Responsive Design */
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .prompt-section {
+                padding: 25px 20px;
+            }
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+            .button-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Background particles container -->
+    <div class="bg-particles"></div>
+
+    <!-- Advanced particle canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="container">
+        <div class="header">
+            <h1>🌟 Ultimate Smart Prompt Experience</h1>
+            <p>AI-Powered Reality Transformer - Understands Everything You Type!</p>
+            <p class="subtitle">Typos, emotions, colors, animations, themes, and complex sentences</p>
+        </div>
+
+        <div class="prompt-section">
+            <div class="input-container">
+                <input type="text" class="prompt-input" placeholder="Try: 'make it rainbow and dance', 'I feel happy', 'fire storm', 'blu ocean vibes'..." id="promptInput" autocomplete="off">
+                <div class="input-suggestions" id="suggestions"></div>
+            </div>
+
+            <div class="button-container">
+                <button class="execute-btn" onclick="executePrompt()">✨ Transform Reality</button>
+                <button class="voice-btn" onclick="toggleVoiceInput()" id="voiceBtn">🎤 Voice Input</button>
+                <button class="random-btn" onclick="randomEffect()">🎲 Surprise Me</button>
+            </div>
+        </div>
+
+        <div class="response-section" id="responseSection">
+            <div class="response-message" id="responseMessage"></div>
+            <div class="response-actions">
+                <button class="action-btn" onclick="speakResponse()">🔊 Speak</button>
+                <button class="action-btn" onclick="undoLastAction()">↶ Undo</button>
+                <button class="action-btn" onclick="resetAll()">🔄 Reset</button>
+            </div>
+        </div>
+
+        <div class="content-grid" id="contentGrid">
+            <div class="content-card">
+                <h3>🧠 Advanced AI Understanding</h3>
+                <p>I understand complex sentences, multiple commands, typos, emotions, and even interpret creative expressions with context awareness.</p>
+            </div>
+            <div class="content-card">
+                <h3>🎨 Infinite Visual Effects</h3>
+                <p>Colors, animations, themes, particles, glows, size changes, and dynamic backgrounds. Combine multiple effects for stunning results!</p>
+            </div>
+            <div class="content-card">
+                <h3>🎤 Voice & Audio Magic</h3>
+                <p>Voice input recognition, text-to-speech responses, and audio-visual synchronization for a complete multimedia experience.</p>
+            </div>
+            <div class="content-card">
+                <h3>🌈 Emotion-Driven Responses</h3>
+                <p>Express your mood and watch the environment adapt. Happy, sad, excited, calm - I'll create the perfect atmosphere.</p>
+            </div>
+            <div class="content-card">
+                <h3>⚡ Real-Time Processing</h3>
+                <p>Instant response to your commands with smart suggestions, auto-correction, and contextual understanding of your intent.</p>
+            </div>
+            <div class="content-card">
+                <h3>🎭 Creative Intelligence</h3>
+                <p>Even if I don't recognize something, I'll create something beautiful and meaningful based on patterns and creativity.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Enhanced smart command system
+        let currentEffects = [];
+        let lastAction = null;
+        let voiceRecognition = null;
+        let isListening = false;
+        let particleSystem = null;
+
+        // Initialize background particles
+        function initBackgroundParticles() {
+            const container = document.querySelector('.bg-particles');
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.width = (Math.random() * 4 + 2) + 'px';
+                    particle.style.height = particle.style.width;
+                    particle.style.animationDelay = Math.random() * 15 + 's';
+                    container.appendChild(particle);
+                }, i * 200);
+            }
+        }
+
+        // Advanced particle system
+        function initParticleSystem() {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            particleSystem = {
+                canvas,
+                ctx,
+                particles: []
+            };
+        }
+
+        // Enhanced voice recognition
+        function initVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                voiceRecognition = new SpeechRecognition();
+                voiceRecognition.continuous = false;
+                voiceRecognition.interimResults = false;
+                voiceRecognition.lang = 'en-US';
+
+                voiceRecognition.onresult = function(event) {
+                    const command = event.results[0][0].transcript.toLowerCase();
+                    document.getElementById('promptInput').value = command;
+                    executePrompt();
+                };
+
+                voiceRecognition.onerror = function() {
+                    updateVoiceButton(false);
+                    showResponse("🎤 Voice input error. Please try again.", 'error');
+                };
+
+                voiceRecognition.onend = function() {
+                    updateVoiceButton(false);
+                };
+            }
+        }
+
+        // Enhanced prompt execution
+        function executePrompt() {
+            const input = document.getElementById('promptInput');
+            const prompt = input.value.trim().toLowerCase();
+
+            if (!prompt) {
+                showResponse("🤔 I'm ready to transform reality! Type anything and watch the magic happen!", 'suggestion');
+                return;
+            }
+
+            processAdvancedPrompt(prompt);
+            input.value = '';
+            hideSuggestions();
+        }
+
+        // Advanced prompt processing with AI-like understanding
+        function processAdvancedPrompt(prompt) {
+            let effects = [];
+            let corrections = [];
+            let emotionDetected = null;
+            let responseMessage = "";
+
+            // Enhanced emotion detection with context
+            if (matchesPattern(prompt, ['happy', 'joy', 'excited', 'good', 'great', 'awesome', 'fantastic', 'wonderful', 'cheerful', 'delighted'])) {
+                emotionDetected = 'happy';
+                effects.push('bounce', 'yellow-theme', 'neon-glow');
+                createHeartParticles();
+                responseMessage = "😊 I feel your happiness radiating! Creating a joyful atmosphere!";
+            } else if (matchesPattern(prompt, ['sad', 'down', 'unhappy', 'depressed', 'lonely', 'blue', 'melancholy', 'gloomy'])) {
+                emotionDetected = 'sad';
+                effects.push('ocean-bg', 'floating');
+                createRainParticles();
+                responseMessage = "💙 I understand... Here's a gentle, calming space for you.";
+            } else if (matchesPattern(prompt, ['angry', 'mad', 'furious', 'rage', 'annoyed', 'frustrated', 'irritated'])) {
+                emotionDetected = 'angry';
+                effects.push('fire-bg', 'shake', 'red-theme');
+                createFireParticles();
+                responseMessage = "🔥 I can sense your intensity! Channeling that energy into something powerful!";
+            } else if (matchesPattern(prompt, ['calm', 'relax', 'peaceful', 'zen', 'tranquil', 'serene', 'chill', 'mellow'])) {
+                emotionDetected = 'calm';
+                effects.push('green-theme', 'floating', 'pulse');
+                createBubbleParticles();
+                responseMessage = "🌿 Creating a peaceful sanctuary... breathe and let go.";
+            } else if (matchesPattern(prompt, ['excited', 'party', 'celebrate', 'dance', 'fun', 'energetic', 'pumped'])) {
+                emotionDetected = 'party';
+                effects.push('rainbow-bg', 'dance', 'neon-glow');
+                createConfettiParticles();
+                responseMessage = "🎉 Party mode activated! Let's celebrate life!";
+            }
+
+            // Enhanced color detection with typo correction
+            const colorMappings = {
+                'red': ['red', 'rad', 'reed', 'redish', 'crimson', 'scarlet'],
+                'blue': ['blue', 'blu', 'blew', 'bleu', 'azure', 'navy', 'cyan'],
+                'green': ['green', 'gren', 'grean', 'grn', 'emerald', 'lime', 'forest'],
+                'yellow': ['yellow', 'yelow', 'yello', 'ylw', 'golden', 'amber', 'sunny'],
+                'purple': ['purple', 'purpel', 'pruple', 'purpl', 'violet', 'lavender', 'magenta'],
+                'pink': ['pink', 'pnk', 'pinck', 'rose', 'coral', 'salmon'],
+                'orange': ['orange', 'orng', 'ornge', 'tangerine', 'peach'],
+                'black': ['black', 'blck', 'dark', 'noir', 'ebony'],
+                'white': ['white', 'wht', 'light', 'bright', 'ivory'],
+                'rainbow': ['rainbow', 'rainbo', 'colorful', 'colours', 'colors', 'multicolor']
+            };
+
+            for (const [color, variants] of Object.entries(colorMappings)) {
+                if (matchesPattern(prompt, variants)) {
+                    if (color === 'rainbow') {
+                        effects.push('rainbow-bg');
+                    } else {
+                        effects.push(`${color}-theme`);
+                    }
+                    if (!variants.includes(prompt.split(' ').find(word => variants.some(v => word.includes(v))))) {
+                        corrections.push(color);
+                    }
+                    break;
+                }
+            }
+
+            // Enhanced animation detection
+            const animationMappings = {
+                'spin': ['spin', 'rotate', 'turn', 'spinn', 'rotat', 'whirl', 'twirl'],
+                'dance': ['dance', 'danc', 'dancing', 'groove', 'boogie', 'wiggle'],
+                'bounce': ['bounce', 'jump', 'hop', 'bouncy', 'spring'],
+                'shake': ['shake', 'vibrat', 'shak', 'trembl', 'quake', 'shiver'],
+                'float': ['float', 'hover', 'fly', 'floaty', 'levitate', 'drift'],
+                'wobble': ['wobble', 'wiggle', 'woble', 'jiggle', 'sway'],
+                'pulse': ['pulse', 'beat', 'throb', 'heartbeat', 'rhythm'],
+                'glitch': ['glitch', 'error', 'bug', 'corrupt', 'digital', 'matrix'],
+                'flip': ['flip', 'rotate', 'turn', 'reverse', 'invert'],
+                'zoom': ['zoom', 'grow', 'expand', 'magnify', 'enlarge'],
+                'fade': ['fade', 'disappear', 'vanish', 'ghost']
+            };
+
+            for (const [animation, variants] of Object.entries(animationMappings)) {
+                if (matchesPattern(prompt, variants)) {
+                    effects.push(animation);
+                    if (!variants.includes(prompt.split(' ').find(word => variants.some(v => word.includes(v))))) {
+                        corrections.push(animation);
+                    }
+                    break;
+                }
+            }
+
+            // Enhanced theme detection
+            const themeMappings = {
+                'fire-bg': ['fire', 'flame', 'burn', 'hot', 'lava', 'inferno', 'blaze'],
+                'ocean-bg': ['ocean', 'water', 'sea', 'wave', 'aqua', 'marine', 'deep'],
+                'space-bg': ['space', 'galaxy', 'stars', 'cosmic', 'universe', 'nebula', 'void'],
+                'galaxy-bg': ['galaxy', 'milky', 'cosmos', 'stellar', 'astral'],
+                'sunset-bg': ['sunset', 'dawn', 'dusk', 'twilight', 'golden hour'],
+                'aurora-bg': ['aurora', 'northern lights', 'borealis', 'light show']
+            };
+
+            for (const [theme, variants] of Object.entries(themeMappings)) {
+                if (matchesPattern(prompt, variants)) {
+                    effects.push(theme);
+                    break;
+                }
+            }
+
+            // Special effects detection
+            if (matchesPattern(prompt, ['big', 'large', 'huge', 'giant', 'massive', 'enormous', 'grow', 'expand'])) {
+                effects.push('giant');
+            }
+            if (matchesPattern(prompt, ['small', 'tiny', 'mini', 'little', 'shrink', 'microscopic'])) {
+                effects.push('tiny');
+            }
+            if (matchesPattern(prompt, ['glow', 'neon', 'bright', 'shine', 'light', 'luminous', 'radiant'])) {
+                effects.push('neon-glow');
+            }
+            if (matchesPattern(prompt, ['blur', 'blurry', 'unfocus', 'soft', 'hazy'])) {
+                effects.push('blur-effect');
+            }
+            if (matchesPattern(prompt, ['hide', 'invisible', 'gone', 'disappear', 'vanish'])) {
+                effects.push('hidden');
+            }
+            if (matchesPattern(prompt, ['matrix', 'code', 'digital', 'cyber', 'hack'])) {
+                effects.push('matrix-effect');
+                createMatrixParticles();
+            }
+
+            // Particle effects
+            if (matchesPattern(prompt, ['confetti', 'party', 'celebrate', 'celebration', 'festive'])) {
+                createConfettiParticles();
+            }
+            if (matchesPattern(prompt, ['hearts', 'love', 'romance', 'heart', 'valentine'])) {
+                createHeartParticles();
+            }
+            if (matchesPattern(prompt, ['stars', 'sparkle', 'twinkle', 'glitter', 'shimmer'])) {
+                createStarParticles();
+            }
+            if (matchesPattern(prompt, ['snow', 'winter', 'cold', 'frost', 'ice'])) {
+                createSnowParticles();
+            }
+
+            // Complex command processing
+            if (prompt.includes(' and ') || prompt.includes(' & ')) {
+                const commands = prompt.split(/ and | & /);
+                commands.forEach(cmd => {
+                    const subEffects = processSubCommand(cmd.trim());
+                    effects.push(...subEffects);
+                });
+            }
+
+            // Intensity detection
+            const intensity = detectIntensity(prompt);
+            if (intensity > 1) {
+                effects = effects.map(effect => enhanceEffect(effect, intensity));
+            }
+
+            // Reset commands
+            if (matchesPattern(prompt, ['reset', 'normal', 'clear', 'default', 'stop', 'clean', 'original'])) {
+                resetAll();
+                showResponse("🔄 Reality restored to default state!", 'success');
+                return;
+            }
+
+            // Apply all detected effects
+            if (effects.length > 0) {
+                lastAction = {
+                    effects: [...currentEffects]
+                }; // Store for undo
+                applyEffects(effects);
+
+                if (!responseMessage) {
+                    responseMessage = generateSmartResponse(prompt, effects, corrections);
+                }
+
+                showResponse(responseMessage, 'success');
+
+                // Speak response if voice was used
+                if (isListening) {
+                    speakResponse();
+                }
+            } else {
+                handleCreativeResponse(prompt);
+            }
+        }
+
+        // Enhanced pattern matching with fuzzy logic
+        function matchesPattern(text, patterns) {
+            return patterns.some(pattern => {
+                if (text.includes(pattern)) return true;
+                // Fuzzy matching for typos
+                return fuzzyMatch(text, pattern);
+            });
+        }
+
+        function fuzzyMatch(text, pattern) {
+            const words = text.split(' ');
+            return words.some(word => {
+                if (word.length < 3 || pattern.length < 3) return false;
+                const distance = levenshteinDistance(word, pattern);
+                return distance <= Math.max(1, Math.floor(pattern.length * 0.3));
+            });
+        }
+
+        function levenshteinDistance(str1, str2) {
+            const matrix = [];
+            for (let i = 0; i <= str2.length; i++) {
+                matrix[i] = [i];
+            }
+            for (let j = 0; j <= str1.length; j++) {
+                matrix[0][j] = j;
+            }
+            for (let i = 1; i <= str2.length; i++) {
+                for (let j = 1; j <= str1.length; j++) {
+                    if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            return matrix[str2.length][str1.length];
+        }
+
+        function processSubCommand(command) {
+            const effects = [];
+            // Process individual sub-commands
+            if (matchesPattern(command, ['red', 'blue', 'green', 'yellow', 'purple', 'pink'])) {
+                const color = command.match(/(red|blue|green|yellow|purple|pink)/)[0];
+                effects.push(`${color}-theme`);
+            }
+            if (matchesPattern(command, ['spin', 'dance', 'bounce', 'shake', 'float'])) {
+                const anim = command.match(/(spin|dance|bounce|shake|float)/)[0];
+                effects.push(anim);
+            }
+            return effects;
+        }
+
+        function detectIntensity(prompt) {
+            let intensity = 1;
+            if (prompt.includes('!!!') || prompt.includes('very') || prompt.includes('super') || prompt.includes('ultra')) {
+                intensity = 2;
+            }
+            if (prompt.includes('extremely') || prompt.includes('insanely') || prompt.includes('mega')) {
+                intensity = 3;
+            }
+            return intensity;
+        }
+
+        function enhanceEffect(effect, intensity) {
+            // Enhance effects based on intensity
+            if (intensity > 1 && !effect.includes('neon-glow')) {
+                return [effect, 'neon-glow'];
+            }
+            return effect;
+        }
+
+        function generateSmartResponse(prompt, effects, corrections) {
+            let response = "✨ ";
+
+            if (corrections.length > 0) {
+                response += `I understood "${corrections.join(', ')}" from your input! `;
+            }
+
+            if (effects.length === 1) {
+                response += `Applied ${effects[0].replace('-', ' ')} effect!`;
+            } else if (effects.length > 1) {
+                response += `Combined ${effects.length} effects for an amazing transformation!`;
+            }
+
+            // Add contextual flavor
+            if (prompt.includes('please') || prompt.includes('thank')) {
+                response += " You're so polite! 😊";
+            }
+            if (prompt.length > 50) {
+                response += " I love detailed commands!";
+            }
+
+            return response;
+        }
+
+        function handleCreativeResponse(prompt) {
+            // Creative AI-like responses for unrecognized input
+            const creativeFallbacks = [
+                () => {
+                    if (prompt.length > 30) {
+                        applyEffects(['rainbow-bg', 'pulse']);
+                        return "📚 Such a detailed expression! Here's a rainbow pulse for your creativity!";
+                    }
+                },
+                () => {
+                    if (prompt.includes('!')) {
+                        applyEffects(['dance', 'yellow-theme']);
+                        createConfettiParticles();
+                        return "❗ I love your enthusiasm! Let's dance!";
+                    }
+                },
+                () => {
+                    if (prompt.includes('?')) {
+                        applyEffects(['wobble', 'purple-theme']);
+                        return "❓ Interesting question! Here's something mysterious!";
+                    }
+                },
+                () => {
+                    if (/\d/.test(prompt)) {
+                        applyEffects(['matrix-effect', 'glitch']);
+                        createMatrixParticles();
+                        return "🔢 Numbers detected! Entering digital mode!";
+                    }
+                },
+                () => {
+                    // Random creative response
+                    const randomEffects = [
+                        ['aurora-bg', 'float'],
+                        ['galaxy-bg', 'spin'],
+                        ['sunset-bg', 'pulse'],
+                        ['ocean-bg', 'wobble']
+                    ];
+                    const chosen = randomEffects[Math.floor(Math.random() * randomEffects.length)];
+                    applyEffects(chosen);
+                    return `🎨 "${prompt}" sounds beautiful! Here's my artistic interpretation!`;
+                }
+            ];
+
+            for (const fallback of creativeFallbacks) {
+                const result = fallback();
+                if (result) {
+                    showResponse(result, 'success');
+                    return;
+                }
+            }
+
+            // Final fallback
+            applyEffects(['rainbow-bg', 'dance']);
+            createStarParticles();
+            showResponse(`🌟 I may not understand "${prompt}" exactly, but it inspired something magical!`, 'suggestion');
+        }
+
+        function applyEffects(effects) {
+            const flatEffects = effects.flat();
+            currentEffects = [...flatEffects];
+
+            // Reset previous effects
+            resetVisualEffects();
+
+            // Apply theme effects to body
+            const themeEffects = flatEffects.filter(e => e.includes('-bg') || e.includes('-theme'));
+            themeEffects.forEach(effect => {
+                document.body.classList.add(effect);
+            });
+
+            // Apply animation effects to cards
+            const animationEffects = flatEffects.filter(e => ['spin', 'dance', 'bounce', 'shake', 'float', 'wobble', 'pulse', 'glitch', 'flip'].includes(e));
+            if (animationEffects.length > 0) {
+                const cards = document.querySelectorAll('.content-card');
+                cards.forEach(card => {
+                    animationEffects.forEach(anim => {
+                        card.classList.add(anim);
+                    });
+                });
+            }
+
+            // Apply special effects
+            const specialEffects = flatEffects.filter(e => ['neon-glow', 'giant', 'tiny', 'blur-effect', 'hidden', 'matrix-effect'].includes(e));
+            specialEffects.forEach(effect => {
+                const elements = document.querySelectorAll('.content-card, .header');
+                elements.forEach(el => {
+                    el.classList.add(effect);
+                });
+            });
+        }
+
+        function resetVisualEffects() {
+            // Reset body classes
+            document.body.className = '';
+
+            // Reset all element classes
+            const elements = document.querySelectorAll('.content-card, .header, .container');
+            elements.forEach(el => {
+                el.classList.forEach(className => {
+                    if (!['content-card', 'header', 'container'].includes(className)) {
+                        el.classList.remove(className);
+                    }
+                });
+            });
+
+            // Clear particles
+            if (particleSystem) {
+                particleSystem.ctx.clearRect(0, 0, particleSystem.canvas.width, particleSystem.canvas.height);
+                particleSystem.particles = [];
+            }
+        }
+
+        // Enhanced particle systems
+        function createConfettiParticles() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#ff9ff3', '#54a0ff'];
+            createParticles(60, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: -20,
+                vx: (Math.random() - 0.5) * 4,
+                vy: Math.random() * 3 + 2,
+                size: Math.random() * 8 + 4,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rotation: Math.random() * 360,
+                rotationSpeed: (Math.random() - 0.5) * 10,
+                life: 3000
+            }));
+        }
+
+        function createHeartParticles() {
+            createParticles(25, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: window.innerHeight + 20,
+                vx: (Math.random() - 0.5) * 2,
+                vy: -Math.random() * 3 - 1,
+                size: Math.random() * 15 + 10,
+                symbol: '💖',
+                rotation: Math.random() * 360,
+                rotationSpeed: (Math.random() - 0.5) * 5,
+                life: 4000
+            }));
+        }
+
+        function createStarParticles() {
+            createParticles(40, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                vx: (Math.random() - 0.5) * 1,
+                vy: (Math.random() - 0.5) * 1,
+                size: Math.random() * 6 + 2,
+                color: '#fff',
+                twinkle: Math.random() * 2000,
+                life: 6000
+            }));
+        }
+
+        function createFireParticles() {
+            const colors = ['#ff4757', '#ff6b35', '#ff9f43', '#ffc048', '#ff7675'];
+            createParticles(50, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: window.innerHeight,
+                vx: (Math.random() - 0.5) * 3,
+                vy: -Math.random() * 5 - 2,
+                size: Math.random() * 10 + 5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                life: 2000
+            }));
+        }
+
+        function createBubbleParticles() {
+            createParticles(30, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: window.innerHeight + 20,
+                vx: (Math.random() - 0.5) * 2,
+                vy: -Math.random() * 2 - 1,
+                size: Math.random() * 20 + 10,
+                color: 'rgba(135, 206, 235, 0.6)',
+                life: 5000
+            }));
+        }
+
+        function createRainParticles() {
+            createParticles(80, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: -10,
+                vx: 0,
+                vy: Math.random() * 8 + 5,
+                size: 2,
+                color: '#87CEEB',
+                life: 3000
+            }));
+        }
+
+        function createSnowParticles() {
+            createParticles(60, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: -10,
+                vx: (Math.random() - 0.5) * 2,
+                vy: Math.random() * 3 + 1,
+                size: Math.random() * 8 + 3,
+                color: '#fff',
+                life: 8000
+            }));
+        }
+
+        function createMatrixParticles() {
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            createParticles(40, (particle, i) => ({
+                x: i * (window.innerWidth / 40),
+                y: -20,
+                vx: 0,
+                vy: Math.random() * 5 + 2,
+                char: chars[Math.floor(Math.random() * chars.length)],
+                color: '#00ff41',
+                life: 5000
+            }));
+        }
+
+        function createParticles(count, particleConfig) {
+            if (!particleSystem) return;
+
+            const {
+                ctx,
+                canvas
+            } = particleSystem;
+
+            for (let i = 0; i < count; i++) {
+                const particle = particleConfig({}, i);
+                particle.created = Date.now();
+                particleSystem.particles.push(particle);
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                particleSystem.particles = particleSystem.particles.filter(particle => {
+                    const age = Date.now() - particle.created;
+                    if (age > particle.life) return false;
+
+                    // Update position
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+
+                    if (particle.rotation !== undefined) {
+                        particle.rotation += particle.rotationSpeed;
+                    }
+
+                    // Draw particle
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0, 1 - age / particle.life);
+
+                    if (particle.symbol) {
+                        ctx.font = `${particle.size}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.fillStyle = '#ff69b4';
+                        if (particle.rotation) {
+                            ctx.translate(particle.x, particle.y);
+                            ctx.rotate(particle.rotation * Math.PI / 180);
+                            ctx.fillText(particle.symbol, 0, 0);
+                        } else {
+                            ctx.fillText(particle.symbol, particle.x, particle.y);
+                        }
+                    } else if (particle.char) {
+                        ctx.font = `${particle.size || 14}px monospace`;
+                        ctx.fillStyle = particle.color;
+                        ctx.fillText(particle.char, particle.x, particle.y);
+                    } else {
+                        ctx.fillStyle = particle.color;
+                        ctx.beginPath();
+                        ctx.arc(particle.x, particle.y, particle.size / 2, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        if (particle.twinkle) {
+                            const twinkleIntensity = Math.sin(Date.now() / 200 + particle.twinkle) * 0.5 + 0.5;
+                            ctx.shadowColor = particle.color;
+                            ctx.shadowBlur = 10 * twinkleIntensity;
+                            ctx.fill();
+                        }
+                    }
+
+                    ctx.restore();
+
+                    return particle.y < canvas.height + 100 && particle.y > -100;
+                });
+
+                if (particleSystem.particles.length > 0) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            animate();
+        }
+
+        // Voice input functionality
+        function toggleVoiceInput() {
+            if (!voiceRecognition) {
+                showResponse("🎤 Voice input not supported in this browser. Try Chrome or Edge!", 'error');
+                return;
+            }
+
+            if (isListening) {
+                voiceRecognition.stop();
+                updateVoiceButton(false);
+            } else {
+                voiceRecognition.start();
+                updateVoiceButton(true);
+                showResponse("🎤 Listening... Speak your command!", 'success');
+            }
+        }
+
+        function updateVoiceButton(listening) {
+            isListening = listening;
+            const btn = document.getElementById('voiceBtn');
+            if (listening) {
+                btn.textContent = '🛑 Stop Listening';
+                btn.style.background = 'linear-gradient(45deg, #ff4757, #c44569)';
+            } else {
+                btn.textContent = '🎤 Voice Input';
+                btn.style.background = 'linear-gradient(45deg, #ff6b6b, #ee5a52)';
+            }
+        }
+
+        function speakResponse() {
+            const message = document.getElementById('responseMessage').textContent;
+            if (!message) return;
+
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(message.replace(/[🌟✨🎉🔥💙😊🤔🎲🎤🔊↶🔄]/g, ''));
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        // Random effect generator
+        function randomEffect() {
+            const randomCombinations = [
+                ['rainbow-bg', 'dance', 'neon-glow'],
+                ['fire-bg', 'spin', 'giant'],
+                ['ocean-bg', 'float', 'blur-effect'],
+                ['space-bg', 'glitch', 'matrix-effect'],
+                ['aurora-bg', 'pulse', 'tiny'],
+                ['galaxy-bg', 'wobble', 'neon-glow'],
+                ['sunset-bg', 'bounce', 'giant']
+            ];
+
+            const chosen = randomCombinations[Math.floor(Math.random() * randomCombinations.length)];
+            applyEffects(chosen);
+
+            // Add random particles
+            const particleTypes = [
+                createConfettiParticles,
+                createStarParticles,
+                createHeartParticles,
+                createBubbleParticles,
+                createSnowParticles
+            ];
+            const randomParticle = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+            randomParticle();
+
+            showResponse("🎲 Random magic applied! Every surprise is unique!", 'success');
+        }
+
+        function undoLastAction() {
+            if (lastAction) {
+                currentEffects = lastAction.effects;
+                applyEffects(currentEffects);
+                showResponse("↶ Previous state restored!", 'success');
+                lastAction = null;
+            } else {
+                showResponse("↶ Nothing to undo!", 'suggestion');
+            }
+        }
+
+        function resetAll() {
+            lastAction = {
+                effects: [...currentEffects]
+            };
+            currentEffects = [];
+            resetVisualEffects();
+            document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            showResponse("🔄 Reality reset to default state!", 'success');
+        }
+
+        function showResponse(message, type = 'success') {
+            const section = document.getElementById('responseSection');
+            const messageEl = document.getElementById('responseMessage');
+
+            messageEl.textContent = message;
+            section.className = `response-section fade-in ${type}`;
+            section.style.display = 'block';
+
+            // Auto-hide after 8 seconds
+            setTimeout(() => {
+                if (section.style.display !== 'none') {
+                    section.style.opacity = '0.7';
+                }
+            }, 8000);
+        }
+
+        function hideSuggestions() {
+            document.getElementById('suggestions').style.display = 'none';
+        }
+
+        // Input suggestions and auto-complete
+        function setupInputSuggestions() {
+            const input = document.getElementById('promptInput');
+            const suggestions = document.getElementById('suggestions');
+
+            const commonCommands = [
+                'make it rainbow and dance',
+                'I feel happy',
+                'fire storm with spinning',
+                'ocean vibes and floating',
+                'galaxy space mode',
+                'glow with neon effects',
+                'party time with confetti',
+                'calm and peaceful',
+                'red and angry',
+                'blue ocean waves',
+                'matrix digital mode',
+                'tiny and cute',
+                'giant and powerful',
+                'reset to normal'
+            ];
+
+            input.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                if (value.length < 2) {
+                    hideSuggestions();
+                    return;
+                }
+
+                const matches = commonCommands.filter(cmd =>
+                    cmd.toLowerCase().includes(value) ||
+                    fuzzyMatch(value, cmd.toLowerCase())
+                ).slice(0, 5);
+
+                if (matches.length > 0) {
+                    suggestions.innerHTML = matches.map(match =>
+                        `<div class="suggestion-item" onclick="selectSuggestion('${match}')">${match}</div>`
+                    ).join('');
+                    suggestions.style.display = 'block';
+                } else {
+                    hideSuggestions();
+                }
+            });
+
+            input.addEventListener('blur', () => {
+                setTimeout(hideSuggestions, 200); // Delay to allow click
+            });
+        }
+
+        function selectSuggestion(suggestion) {
+            document.getElementById('promptInput').value = suggestion;
+            hideSuggestions();
+            executePrompt();
+        }
+
+        // Enter key support
+        document.getElementById('promptInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                executePrompt();
+            }
+        });
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initBackgroundParticles();
+            initParticleSystem();
+            initVoiceRecognition();
+            setupInputSuggestions();
+
+            // Welcome animation
+            setTimeout(() => {
+                showResponse("🌟 Welcome to the Ultimate Smart Prompt Experience! Try typing anything - I understand it all!", 'success');
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html>
