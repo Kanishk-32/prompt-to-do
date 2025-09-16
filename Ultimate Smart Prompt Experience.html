@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<!-- saved from url=(0042)https://stirring-druid-a60782.netlify.app/ -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Smart Prompt Experience</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .bg-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.3;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float-particle 15s infinite linear;
+        }
+
+        @keyframes float-particle {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 4rem);
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: title-glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes title-glow {
+            0% { text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5); }
+            100% { text-shadow: 2px 2px 20px rgba(255, 255, 255, 0.8); }
+        }
+
+        .header p {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+            opacity: 0.95;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            opacity: 0.8;
+            font-style: italic;
+        }
+
+        .prompt-section {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 35px;
+            margin-bottom: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prompt-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #fff, transparent);
+            animation: scan 3s infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .input-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .prompt-input {
+            width: 100%;
+            padding: 18px 25px;
+            font-size: 1.2rem;
+            border: 2px solid transparent;
+            border-radius: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            outline: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
+        }
+
+        .prompt-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+            transform: scale(1.02);
+        }
+
+        .input-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin-top: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 100;
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            transition: background 0.2s;
+        }
+
+        .suggestion-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .execute-btn, .voice-btn, .random-btn, .theme-btn, .history-btn, .share-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            margin: 5px;
+        }
+
+        .voice-btn { background: linear-gradient(45deg, #ff6b6b, #ee5a52); }
+        .random-btn { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
+        .theme-btn { background: linear-gradient(45deg, #a29bfe, #6c5ce7); }
+        .history-btn { background: linear-gradient(45deg, #fdcb6e, #e17055); }
+        .share-btn { background: linear-gradient(45deg, #fd79a8, #e84393); }
+
+        .execute-btn:hover, .voice-btn:hover, .random-btn:hover, 
+        .theme-btn:hover, .history-btn:hover, .share-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .execute-btn::before, .voice-btn::before, .random-btn::before,
+        .theme-btn::before, .history-btn::before, .share-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .execute-btn:hover::before, .voice-btn:hover::before, .random-btn:hover::before,
+        .theme-btn:hover::before, .history-btn:hover::before, .share-btn:hover::before {
+            left: 100%;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .content-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: rotate 4s linear infinite;
+            opacity: 0;
+        }
+
+        .content-card:hover::before { opacity: 1; }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .content-card h3 {
+            margin-bottom: 15px;
+            color: #f8f8f8;
+            font-size: 1.3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content-card p {
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
+        }
+
+        .content-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .response-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .response-message {
+            color: white;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .response-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .history-panel {
+            position: fixed;
+            right: -350px;
+            top: 0;
+            width: 350px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 20px;
+            transition: right 0.5s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            border-left: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .history-panel.open { right: 0; }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid #667eea;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-5px);
+        }
+
+        .history-time {
+            font-size: 0.8rem;
+            opacity: 0.7;
+            margin-bottom: 5px;
+        }
+
+        .close-history {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .settings-panel {
+            position: fixed;
+            left: -350px;
+            top: 0;
+            width: 350px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 20px;
+            transition: left 0.5s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            border-right: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .settings-panel.open { left: 0; }
+
+        .setting-group {
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+        }
+
+        .setting-group h3 {
+            margin-bottom: 15px;
+            color: #667eea;
+        }
+
+        .setting-control {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px 0;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 25px;
+            background: #333;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.active { background: #667eea; }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 21px;
+            height: 21px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active::before { transform: translateX(25px); }
+
+        .performance-monitor {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            z-index: 999;
+            display: none;
+        }
+
+        .performance-monitor.show { display: block; }
+
+        .gesture-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gesture-indicator.show { opacity: 1; }
+
+        /* Animations */
+        .floating { animation: float 3s ease-in-out infinite; }
+        .spin { animation: spin 2s linear infinite; }
+        .dance { animation: dance 1s ease-in-out infinite; }
+        .bounce { animation: bounce 1.5s ease-in-out infinite; }
+        .shake { animation: shake 0.5s ease-in-out; }
+        .pulse { animation: pulse 2s ease-in-out infinite; }
+        .wobble { animation: wobble 1.5s ease-in-out infinite; }
+        .glitch { animation: glitch 2s linear infinite; }
+        .teleport { animation: teleport 0.5s ease-in-out; }
+        .morph { animation: morph 2s ease-in-out infinite; }
+        .explode { animation: explode 1s ease-out; }
+        .lightning { animation: lightning 0.1s ease-in-out infinite; }
+        .earthquake { animation: earthquake 0.5s ease-in-out; }
+        .tornado { animation: tornado 2s linear infinite; }
+        .portal { animation: portal 3s ease-in-out infinite; }
+
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-15px); } }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes dance { 0%, 100% { transform: translateX(0) rotate(0deg); } 25% { transform: translateX(-15px) rotate(-8deg); } 50% { transform: translateX(0) rotate(0deg); } 75% { transform: translateX(15px) rotate(8deg); } }
+        @keyframes bounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-25px) scale(1.1); } }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-15px); } 75% { transform: translateX(15px); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+        @keyframes wobble { 0%, 100% { transform: rotate(0deg); } 15% { transform: rotate(-8deg); } 30% { transform: rotate(8deg); } 45% { transform: rotate(-5deg); } 60% { transform: rotate(5deg); } 75% { transform: rotate(-2deg); } }
+        @keyframes glitch { 0%, 100% { transform: translate(0); filter: hue-rotate(0deg); } 10% { transform: translate(-3px, -3px); filter: hue-rotate(90deg); } 20% { transform: translate(3px, 3px); filter: hue-rotate(180deg); } 30% { transform: translate(-2px, 2px); filter: hue-rotate(270deg); } }
+        @keyframes teleport { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0; transform: scale(0.1) rotate(180deg); } 100% { opacity: 1; transform: scale(1) rotate(360deg); } }
+        @keyframes morph { 0%, 100% { border-radius: 20px; transform: scale(1); } 25% { border-radius: 50%; transform: scale(1.1) rotate(90deg); } 50% { border-radius: 0; transform: scale(0.9) rotate(180deg); } 75% { border-radius: 50%; transform: scale(1.1) rotate(270deg); } }
+        @keyframes explode { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(2); opacity: 0; } }
+        @keyframes lightning { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(3) contrast(2); } }
+        @keyframes earthquake { 0%, 100% { transform: translateX(0); } 10% { transform: translateX(-10px) rotate(-1deg); } 20% { transform: translateX(10px) rotate(1deg); } 30% { transform: translateX(-8px) rotate(-1deg); } 40% { transform: translateX(8px) rotate(1deg); } }
+        @keyframes tornado { 0% { transform: rotate(0deg) scale(1); } 25% { transform: rotate(90deg) scale(1.1); } 50% { transform: rotate(180deg) scale(0.9); } 75% { transform: rotate(270deg) scale(1.1); } 100% { transform: rotate(360deg) scale(1); } }
+        @keyframes portal { 0%, 100% { transform: scale(1); box-shadow: 0 0 20px rgba(102, 126, 234, 0.5); } 50% { transform: scale(1.2); box-shadow: 0 0 50px rgba(102, 126, 234, 1); } }
+
+        /* Theme Effects */
+        .rainbow-bg { background: linear-gradient(45deg, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #8f00ff) !important; background-size: 400% 400% !important; animation: rainbow-move 3s ease infinite; }
+        .fire-bg { background: linear-gradient(45deg, #ff4757, #ff6b35, #ff9f43, #ffc048) !important; background-size: 400% 400% !important; animation: fire-flicker 1.5s ease-in-out infinite alternate; }
+        .ocean-bg { background: linear-gradient(45deg, #0077be, #00a8cc, #0abde3, #48cae4) !important; background-size: 400% 400% !important; animation: ocean-wave 4s ease-in-out infinite; }
+        .space-bg { background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 30%, #0f3460 70%, #000 100%) !important; }
+        .galaxy-bg { background: radial-gradient(ellipse at center, #2b1055 0%, #7597de 50%, #fbc2eb 100%) !important; }
+        .aurora-bg { background: linear-gradient(135deg, #00c9ff 0%, #92fe9d 25%, #00c9ff 50%, #92fe9d 75%, #00c9ff 100%) !important; background-size: 400% 400% !important; animation: aurora-dance 6s ease-in-out infinite; }
+        
+        .red-theme { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 50%, #ff4757 100%) !important; }
+        .blue-theme { background: linear-gradient(135deg, #74b9ff 0%, #0984e3 50%, #00cec9 100%) !important; }
+        .green-theme { background: linear-gradient(135deg, #00b894 0%, #00a085 50%, #55a3ff 100%) !important; }
+        .yellow-theme { background: linear-gradient(135deg, #fdcb6e 0%, #f39c12 50%, #e17055 100%) !important; }
+        .purple-theme { background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 50%, #fd79a8 100%) !important; }
+        .pink-theme { background: linear-gradient(135deg, #fd79a8 0%, #e84393 50%, #ff6b9d 100%) !important; }
+
+        @keyframes rainbow-move { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+        @keyframes fire-flicker { 0% { background-position: 0% 50%; filter: brightness(1) saturate(1.2); } 100% { background-position: 100% 50%; filter: brightness(1.3) saturate(1.5); } }
+        @keyframes ocean-wave { 0%, 100% { background-position: 0% 50%; } 25% { background-position: 25% 75%; } 50% { background-position: 100% 50%; } 75% { background-position: 75% 25%; } }
+        @keyframes aurora-dance { 0%, 100% { background-position: 0% 0%; } 33% { background-position: 100% 100%; } 66% { background-position: 0% 100%; } }
+
+        /* Special Effects */
+        .neon-glow { box-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor, 0 0 20px currentColor, 0 0 35px currentColor !important; text-shadow: 0 0 10px currentColor !important; }
+        .giant { transform: scale(1.3) !important; }
+        .tiny { transform: scale(0.6) !important; }
+        .blur-effect { filter: blur(3px); }
+        .hidden { opacity: 0 !important; pointer-events: none; }
+        .matrix-effect { font-family: 'Courier New', monospace; color: #00ff41 !important; text-shadow: 0 0 10px #00ff41; }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            .prompt-section { padding: 25px 20px; }
+            .content-grid { grid-template-columns: 1fr; }
+            .button-container { flex-direction: column; }
+            .history-panel, .settings-panel { width: 300px; }
+            .performance-monitor { font-size: 0.7rem; padding: 5px 10px; }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 { font-size: 1.8rem; }
+            .button-container button { padding: 12px 20px; font-size: 1rem; }
+            .history-panel, .settings-panel { width: 100vw; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-particles"><div class="particle" style="left: 98.5849%; width: 2.84152px; height: 2.84152px; animation-delay: 14.6411s;"></div><div class="particle" style="left: 66.1239%; width: 2.1878px; height: 2.1878px; animation-delay: 13.2573s;"></div><div class="particle" style="left: 9.66999%; width: 2.23187px; height: 2.23187px; animation-delay: 10.3804s;"></div><div class="particle" style="left: 27.8071%; width: 3.66839px; height: 3.66839px; animation-delay: 13.3441s;"></div><div class="particle" style="left: 82.4176%; width: 3.83699px; height: 3.83699px; animation-delay: 4.63918s;"></div><div class="particle" style="left: 81.6778%; width: 5.65727px; height: 5.65727px; animation-delay: 0.495955s;"></div><div class="particle" style="left: 61.0168%; width: 2.43128px; height: 2.43128px; animation-delay: 13.7686s;"></div><div class="particle" style="left: 88.4121%; width: 5.16502px; height: 5.16502px; animation-delay: 6.04034s;"></div><div class="particle" style="left: 55.9433%; width: 2.24786px; height: 2.24786px; animation-delay: 9.04818s;"></div><div class="particle" style="left: 14.3107%; width: 4.2035px; height: 4.2035px; animation-delay: 3.40236s;"></div><div class="particle" style="left: 35.9046%; width: 3.1564px; height: 3.1564px; animation-delay: 14.9329s;"></div><div class="particle" style="left: 57.3885%; width: 3.76127px; height: 3.76127px; animation-delay: 0.327238s;"></div><div class="particle" style="left: 98.149%; width: 2.3722px; height: 2.3722px; animation-delay: 4.42833s;"></div><div class="particle" style="left: 70.6542%; width: 2.79792px; height: 2.79792px; animation-delay: 3.14755s;"></div><div class="particle" style="left: 17.2804%; width: 2.78846px; height: 2.78846px; animation-delay: 4.21424s;"></div><div class="particle" style="left: 58.474%; width: 2.89795px; height: 2.89795px; animation-delay: 3.85186s;"></div><div class="particle" style="left: 29.5994%; width: 3.21593px; height: 3.21593px; animation-delay: 2.79871s;"></div><div class="particle" style="left: 69.5507%; width: 4.56164px; height: 4.56164px; animation-delay: 6.28165s;"></div><div class="particle" style="left: 94.4799%; width: 2.2989px; height: 2.2989px; animation-delay: 0.896811s;"></div><div class="particle" style="left: 89.4296%; width: 5.83313px; height: 5.83313px; animation-delay: 14.812s;"></div></div>
+    <canvas id="particleCanvas" width="1528" height="738"></canvas>
+    
+    <div class="history-panel" id="historyPanel">
+        <button class="close-history" onclick="toggleHistory()">×</button>
+        <h2>Command History</h2>
+        <div id="historyList"></div>
+        <button class="action-btn" onclick="clearHistory()">Clear History</button>
+    </div>
+    
+    <div class="settings-panel" id="settingsPanel">
+        <button class="close-history" onclick="toggleSettings()">×</button>
+        <h2>Advanced Settings</h2>
+        
+        <div class="setting-group">
+            <h3>Performance</h3>
+            <div class="setting-control">
+                <span>Performance Monitor</span>
+                <div class="toggle-switch" id="perfToggle" onclick="togglePerformanceMonitor()"></div>
+            </div>
+            <div class="setting-control">
+                <span>Particle Density</span>
+                <input type="range" min="1" max="5" value="3" id="particleDensity">
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <h3>Visual</h3>
+            <div class="setting-control">
+                <span>Auto Particles</span>
+                <div class="toggle-switch active" id="particleToggle" onclick="toggleAutoParticles()"></div>
+            </div>
+            <div class="setting-control">
+                <span>Dark Mode</span>
+                <div class="toggle-switch" id="darkToggle" onclick="toggleDarkMode()"></div>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <h3>Audio</h3>
+            <div class="setting-control">
+                <span>Auto Voice Response</span>
+                <div class="toggle-switch" id="voiceToggle" onclick="toggleAutoVoice()"></div>
+            </div>
+            <div class="setting-control">
+                <span>Sound Effects</span>
+                <div class="toggle-switch active" id="soundToggle" onclick="toggleSoundEffects()"></div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="performance-monitor" id="performanceMonitor">
+        FPS: <span id="fpsCounter">60</span> | 
+        Effects: <span id="effectsCount">0</span> | 
+        Particles: <span id="particleCount">0</span>
+    </div>
+    
+    <div class="gesture-indicator" id="gestureIndicator"></div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Ultimate Smart Prompt Experience</h1>
+            <p>AI-Powered Reality Transformer - Understands Everything You Type</p>
+            <p class="subtitle">Typos, emotions, colors, animations, themes, and complex sentences</p>
+        <button class="action-btn" style="position: absolute; top: 20px; left: 20px;">⚙️</button></div>
+
+        <div class="prompt-section">
+            <div class="input-container">
+                <input type="text" class="prompt-input" placeholder="Try: &#39;make it rainbow and dance&#39;, &#39;I feel happy&#39;, &#39;fire storm&#39;, &#39;blue ocean vibes&#39;..." id="promptInput" autocomplete="off">
+                <div class="input-suggestions" id="suggestions"></div>
+            </div>
+            
+            <div class="button-container">
+                <button class="execute-btn" onclick="executePrompt()">Transform Reality</button>
+                <button class="voice-btn" onclick="toggleVoiceInput()" id="voiceBtn">Voice Input</button>
+                <button class="random-btn" onclick="randomEffect()">Surprise Me</button>
+                <button class="theme-btn" onclick="cycleThemes()" id="themeBtn">Themes</button>
+                <button class="history-btn" onclick="toggleHistory()" id="historyBtn">History</button>
+                <button class="share-btn" onclick="shareCreation()" id="shareBtn">Share</button>
+            </div>
+        </div>
+
+        <div class="response-section fade-in success" id="responseSection" style="display: block; opacity: 0.7;">
+            <div class="response-message" id="responseMessage">Welcome to the Ultimate Smart Prompt Experience! Try typing anything - I understand it all!</div>
+            <div class="response-actions">
+                <button class="action-btn" onclick="speakResponse()">Speak</button>
+                <button class="action-btn" onclick="undoLastAction()">Undo</button>
+                <button class="action-btn" onclick="resetAll()">Reset</button>
+            </div>
+        </div>
+
+        <div class="content-grid" id="contentGrid">
+            <div class="content-card">
+                <h3>Advanced AI Understanding</h3>
+                <p>I understand complex sentences, multiple commands, typos, emotions, and even interpret creative expressions with context awareness.</p>
+            </div>
+            <div class="content-card">
+                <h3>Infinite Visual Effects</h3>
+                <p>Colors, animations, themes, particles, glows, size changes, and dynamic backgrounds. Combine multiple effects for stunning results.</p>
+            </div>
+            <div class="content-card">
+                <h3>Voice &amp; Audio Magic</h3>
+                <p>Voice input recognition, text-to-speech responses, and audio-visual synchronization for a complete multimedia experience.</p>
+            </div>
+            <div class="content-card">
+                <h3>Emotion-Driven Responses</h3>
+                <p>Express your mood and watch the environment adapt. Happy, sad, excited, calm - I'll create the perfect atmosphere.</p>
+            </div>
+            <div class="content-card">
+                <h3>Real-Time Processing</h3>
+                <p>Instant response to your commands with smart suggestions, auto-correction, and contextual understanding of your intent.</p>
+            </div>
+            <div class="content-card">
+                <h3>Creative Intelligence</h3>
+                <p>Even if I don't recognize something, I'll create something beautiful and meaningful based on patterns and creativity.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentEffects = [];
+        let lastAction = null;
+        let voiceRecognition = null;
+        let isListening = false;
+        let particleSystem = null;
+        let commandHistory = [];
+        let currentThemeIndex = 0;
+        let settings = {
+            performanceMonitor: false,
+            autoParticles: true,
+            darkMode: false,
+            autoVoice: false,
+            soundEffects: true,
+            particleDensity: 3
+        };
+        let performanceStats = { fps: 60, effects: 0, particles: 0 };
+        let lastTime = 0;
+        let frameCount = 0;
+
+        function initBackgroundParticles() {
+            const container = document.querySelector('.bg-particles');
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.width = (Math.random() * 4 + 2) + 'px';
+                    particle.style.height = particle.style.width;
+                    particle.style.animationDelay = Math.random() * 15 + 's';
+                    container.appendChild(particle);
+                }, i * 200);
+            }
+        }
+
+        function initParticleSystem() {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+            
+            particleSystem = { canvas, ctx, particles: [] };
+        }
+
+        function initVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                voiceRecognition = new SpeechRecognition();
+                voiceRecognition.continuous = false;
+                voiceRecognition.interimResults = true;
+                voiceRecognition.lang = 'en-US';
+                
+                voiceRecognition.onstart = function() {
+                    updateVoiceButton(true);
+                    showResponse("Listening... Speak now!", 'success');
+                };
+                
+                voiceRecognition.onresult = function(event) {
+                    let finalTranscript = '';
+                    let interimTranscript = '';
+                    
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+                        if (event.results[i].isFinal) {
+                            finalTranscript += transcript;
+                        } else {
+                            interimTranscript += transcript;
+                        }
+                    }
+                    
+                    const input = document.getElementById('promptInput');
+                    if (finalTranscript) {
+                        input.value = finalTranscript.toLowerCase();
+                        setTimeout(() => executePrompt(), 500);
+                    } else {
+                        input.value = interimTranscript.toLowerCase();
+                    }
+                };
+                
+                voiceRecognition.onerror = function(event) {
+                    updateVoiceButton(false);
+                    let errorMsg = "Voice error: ";
+                    switch(event.error) {
+                        case 'not-allowed':
+                            errorMsg += "Microphone access denied. Please allow microphone access.";
+                            break;
+                        case 'no-speech':
+                            errorMsg += "No speech detected. Try speaking louder.";
+                            break;
+                        case 'network':
+                            errorMsg += "Network error. Check your connection.";
+                            break;
+                        default:
+                            errorMsg += "Try again or check browser compatibility.";
+                    }
+                    showResponse(errorMsg, 'error');
+                };
+                
+                voiceRecognition.onend = function() {
+                    updateVoiceButton(false);
+                    if (isListening) {
+                        showResponse("Voice input completed!", 'success');
+                    }
+                };
+            }
+        }
+
+        function executePrompt() {
+            const input = document.getElementById('promptInput');
+            const prompt = input.value.trim().toLowerCase();
+            
+            if (!prompt) {
+                showResponse("I'm ready to transform reality! Type anything and watch the magic happen!", 'suggestion');
+                return;
+            }
+
+            addToHistory(prompt);
+            processAdvancedPrompt(prompt);
+            input.value = '';
+            hideSuggestions();
+            
+            if (settings.soundEffects) {
+                playSound('execute');
+            }
+        }
+
+        function addToHistory(command) {
+            const historyItem = {
+                command: command,
+                timestamp: new Date().toLocaleString(),
+                effects: [...currentEffects]
+            };
+            commandHistory.unshift(historyItem);
+            if (commandHistory.length > 50) {
+                commandHistory.pop();
+            }
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const historyList = document.getElementById('historyList');
+            historyList.innerHTML = commandHistory.map((item, index) => `
+                <div class="history-item" onclick="replayCommand(${index})">
+                    <div class="history-time">${item.timestamp}</div>
+                    <div>"${item.command}"</div>
+                    <small>Effects: ${item.effects.join(', ') || 'none'}</small>
+                </div>
+            `).join('');
+        }
+
+        function replayCommand(index) {
+            const item = commandHistory[index];
+            document.getElementById('promptInput').value = item.command;
+            toggleHistory();
+        }
+
+        function clearHistory() {
+            commandHistory = [];
+            updateHistoryDisplay();
+            showResponse("History cleared!", 'success');
+        }
+
+        const themes = [
+            { name: 'Default', bg: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+            { name: 'Sunset', bg: 'linear-gradient(135deg, #ff9a56 0%, #ffad56 25%, #ff6b95 50%, #c44569 75%, #f8b500 100%)' },
+            { name: 'Ocean', bg: 'linear-gradient(135deg, #0077be, #00a8cc, #0abde3, #48cae4)' },
+            { name: 'Forest', bg: 'linear-gradient(135deg, #2d5016, #3e7b27, #6a994e, #a7c957)' },
+            { name: 'Night', bg: 'linear-gradient(135deg, #1a1a2e, #16213e, #0f3460, #000)' },
+            { name: 'Aurora', bg: 'linear-gradient(135deg, #00c9ff 0%, #92fe9d 25%, #00c9ff 50%, #92fe9d 75%, #00c9ff 100%)' }
+        ];
+
+        function cycleThemes() {
+            currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+            const theme = themes[currentThemeIndex];
+            document.body.style.background = theme.bg;
+            showResponse(`Theme changed to: ${theme.name}`, 'success');
+            
+            if (settings.soundEffects) {
+                playSound('theme');
+            }
+        }
+
+        function toggleHistory() {
+            const panel = document.getElementById('historyPanel');
+            panel.classList.toggle('open');
+        }
+
+        function toggleSettings() {
+            const panel = document.getElementById('settingsPanel');
+            panel.classList.toggle('open');
+        }
+
+        function togglePerformanceMonitor() {
+            settings.performanceMonitor = !settings.performanceMonitor;
+            document.getElementById('perfToggle').classList.toggle('active', settings.performanceMonitor);
+            document.getElementById('performanceMonitor').classList.toggle('show', settings.performanceMonitor);
+            
+            if (settings.performanceMonitor) {
+                startPerformanceMonitoring();
+            }
+        }
+
+        function toggleAutoParticles() {
+            settings.autoParticles = !settings.autoParticles;
+            document.getElementById('particleToggle').classList.toggle('active', settings.autoParticles);
+        }
+
+        function toggleDarkMode() {
+            settings.darkMode = !settings.darkMode;
+            document.getElementById('darkToggle').classList.toggle('active', settings.darkMode);
+            
+            if (settings.darkMode) {
+                document.documentElement.style.filter = 'invert(1) hue-rotate(180deg)';
+            } else {
+                document.documentElement.style.filter = '';
+            }
+        }
+
+        function toggleAutoVoice() {
+            settings.autoVoice = !settings.autoVoice;
+            document.getElementById('voiceToggle').classList.toggle('active', settings.autoVoice);
+        }
+
+        function toggleSoundEffects() {
+            settings.soundEffects = !settings.soundEffects;
+            document.getElementById('soundToggle').classList.toggle('active', settings.soundEffects);
+        }
+
+        function startPerformanceMonitoring() {
+            function updatePerformance() {
+                if (!settings.performanceMonitor) return;
+                
+                const now = performance.now();
+                if (lastTime) {
+                    frameCount++;
+                    if (now - lastTime >= 1000) {
+                        performanceStats.fps = Math.round((frameCount * 1000) / (now - lastTime));
+                        frameCount = 0;
+                        lastTime = now;
+                        
+                        document.getElementById('fpsCounter').textContent = performanceStats.fps;
+                        document.getElementById('effectsCount').textContent = currentEffects.length;
+                        document.getElementById('particleCount').textContent = particleSystem?.particles?.length || 0;
+                    }
+                } else {
+                    lastTime = now;
+                }
+                
+                requestAnimationFrame(updatePerformance);
+            }
+            updatePerformance();
+        }
+
+        function playSound(type) {
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                const sounds = {
+                    execute: () => createTone(audioContext, 440, 0.1),
+                    theme: () => createTone(audioContext, 660, 0.15),
+                    error: () => createTone(audioContext, 220, 0.2),
+                    success: () => createChord(audioContext, [440, 554.37, 659.25], 0.3)
+                };
+                
+                if (sounds[type]) {
+                    sounds[type]();
+                }
+            } catch (e) {
+                console.log('Audio not supported');
+            }
+        }
+
+        function createTone(audioContext, frequency, duration) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + duration);
+        }
+
+        function createChord(audioContext, frequencies, duration) {
+            frequencies.forEach(freq => {
+                createTone(audioContext, freq, duration);
+            });
+        }
+
+        let gestureStart = null;
+        let gestureEnd = null;
+
+        function initGestureRecognition() {
+            const container = document.querySelector('.container');
+            
+            container.addEventListener('mousedown', (e) => {
+                gestureStart = { x: e.clientX, y: e.clientY, time: Date.now() };
+            });
+
+            container.addEventListener('mouseup', (e) => {
+                if (!gestureStart) return;
+                
+                gestureEnd = { x: e.clientX, y: e.clientY, time: Date.now() };
+                processGesture();
+            });
+
+            container.addEventListener('touchstart', (e) => {
+                const touch = e.touches[0];
+                gestureStart = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+            });
+
+            container.addEventListener('touchend', (e) => {
+                if (!gestureStart || e.changedTouches.length === 0) return;
+                
+                const touch = e.changedTouches[0];
+                gestureEnd = { x: touch.clientX, y: touch.clientY, time: Date.now() };
+                processGesture();
+            });
+        }
+
+        function processGesture() {
+            const deltaX = gestureEnd.x - gestureStart.x;
+            const deltaY = gestureEnd.y - gestureStart.y;
+            const deltaTime = gestureEnd.time - gestureStart.time;
+            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+            
+            if (deltaTime > 1000 || distance < 50) return;
+
+            let gestureCommand = '';
+            
+            if (Math.abs(deltaX) > Math.abs(deltaY)) {
+                if (deltaX > 0) {
+                    gestureCommand = 'swipe right - next theme';
+                    cycleThemes();
+                } else {
+                    gestureCommand = 'swipe left - random effect';
+                    randomEffect();
+                }
+            } else {
+                if (deltaY > 0) {
+                    gestureCommand = 'swipe down - reset';
+                    resetAll();
+                } else {
+                    gestureCommand = 'swipe up - party mode';
+                    processAdvancedPrompt('party rainbow dance');
+                }
+            }
+
+            showGestureIndicator(gestureCommand);
+            gestureStart = null;
+            gestureEnd = null;
+        }
+
+        function showGestureIndicator(text) {
+            const indicator = document.getElementById('gestureIndicator');
+            indicator.textContent = text;
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+
+        function shareCreation() {
+            const shareData = {
+                effects: currentEffects,
+                theme: themes[currentThemeIndex].name,
+                timestamp: new Date().toLocaleString()
+            };
+
+            const shareText = `Check out my reality transformation: ${shareData.effects.join(', ')} with ${shareData.theme} theme!`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Reality Transformation',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showResponse('Creation copied to clipboard!', 'success');
+                });
+            }
+        }
+
+        function initKeyboardShortcuts() {
+            document.addEventListener('keydown', (e) => {
+                if (e.target.tagName === 'INPUT') return;
+
+                switch(e.key) {
+                    case 'r':
+                        if (e.ctrlKey) {
+                            e.preventDefault();
+                            resetAll();
+                        } else {
+                            randomEffect();
+                        }
+                        break;
+                    case 'v':
+                        toggleVoiceInput();
+                        break;
+                    case 't':
+                        cycleThemes();
+                        break;
+                    case 'h':
+                        toggleHistory();
+                        break;
+                    case 's':
+                        if (e.ctrlKey) {
+                            e.preventDefault();
+                            toggleSettings();
+                        }
+                        break;
+                    case 'Escape':
+                        resetAll();
+                        break;
+                    case ' ':
+                        if (e.ctrlKey) {
+                            e.preventDefault();
+                            document.getElementById('promptInput').focus();
+                        }
+                        break;
+                }
+            });
+        }
+
+        document.getElementById('particleDensity')?.addEventListener('input', (e) => {
+            settings.particleDensity = parseInt(e.target.value);
+        });
+
+        function processAdvancedPrompt(prompt) {
+            let effects = [];
+            let corrections = [];
+            let emotionDetected = null;
+            let responseMessage = "";
+
+            if (matchesPattern(prompt, ['happy', 'joy', 'excited', 'good', 'great', 'awesome', 'fantastic', 'wonderful', 'cheerful', 'delighted'])) {
+                emotionDetected = 'happy';
+                effects.push('bounce', 'yellow-theme', 'neon-glow');
+                if (settings.autoParticles) createHeartParticles();
+                responseMessage = "I feel your happiness radiating! Creating a joyful atmosphere!";
+            }
+            else if (matchesPattern(prompt, ['sad', 'down', 'unhappy', 'depressed', 'lonely', 'blue', 'melancholy', 'gloomy'])) {
+                emotionDetected = 'sad';
+                effects.push('ocean-bg', 'floating');
+                if (settings.autoParticles) createRainParticles();
+                responseMessage = "I understand... Here's a gentle, calming space for you.";
+            }
+            else if (matchesPattern(prompt, ['angry', 'mad', 'furious', 'rage', 'annoyed', 'frustrated', 'irritated'])) {
+                emotionDetected = 'angry';
+                effects.push('fire-bg', 'shake', 'red-theme');
+                if (settings.autoParticles) createFireParticles();
+                responseMessage = "I can sense your intensity! Channeling that energy into something powerful!";
+            }
+            else if (matchesPattern(prompt, ['calm', 'relax', 'peaceful', 'zen', 'tranquil', 'serene', 'chill', 'mellow'])) {
+                emotionDetected = 'calm';
+                effects.push('green-theme', 'floating', 'pulse');
+                if (settings.autoParticles) createBubbleParticles();
+                responseMessage = "Creating a peaceful sanctuary... breathe and let go.";
+            }
+            else if (matchesPattern(prompt, ['excited', 'party', 'celebrate', 'dance', 'fun', 'energetic', 'pumped'])) {
+                emotionDetected = 'party';
+                effects.push('rainbow-bg', 'dance', 'neon-glow');
+                if (settings.autoParticles) createConfettiParticles();
+                responseMessage = "Party mode activated! Let's celebrate life!";
+            }
+
+            const colorMappings = {
+                'red': ['red', 'rad', 'reed', 'redish', 'crimson', 'scarlet'],
+                'blue': ['blue', 'blu', 'blew', 'bleu', 'azure', 'navy', 'cyan'],
+                'green': ['green', 'gren', 'grean', 'grn', 'emerald', 'lime', 'forest'],
+                'yellow': ['yellow', 'yelow', 'yello', 'ylw', 'golden', 'amber', 'sunny'],
+                'purple': ['purple', 'purpel', 'pruple', 'purpl', 'violet', 'lavender', 'magenta'],
+                'pink': ['pink', 'pnk', 'pinck', 'rose', 'coral', 'salmon'],
+                'orange': ['orange', 'orng', 'ornge', 'tangerine', 'peach'],
+                'black': ['black', 'blck', 'dark', 'noir', 'ebony'],
+                'white': ['white', 'wht', 'light', 'bright', 'ivory'],
+                'rainbow': ['rainbow', 'rainbo', 'colorful', 'colours', 'colors', 'multicolor']
+            };
+
+            for (const [color, variants] of Object.entries(colorMappings)) {
+                if (matchesPattern(prompt, variants)) {
+                    if (color === 'rainbow') {
+                        effects.push('rainbow-bg');
+                    } else {
+                        effects.push(`${color}-theme`);
+                    }
+                    break;
+                }
+            }
+
+            const animationMappings = {
+                'spin': ['spin', 'rotate', 'turn', 'spinn', 'rotat', 'whirl', 'twirl'],
+                'dance': ['dance', 'danc', 'dancing', 'groove', 'boogie', 'wiggle'],
+                'bounce': ['bounce', 'jump', 'hop', 'bouncy', 'spring'],
+                'shake': ['shake', 'vibrat', 'shak', 'trembl', 'quake', 'shiver'],
+                'float': ['float', 'hover', 'fly', 'floaty', 'levitate', 'drift'],
+                'wobble': ['wobble', 'wiggle', 'woble', 'jiggle', 'sway'],
+                'pulse': ['pulse', 'beat', 'throb', 'heartbeat', 'rhythm'],
+                'glitch': ['glitch', 'error', 'bug', 'corrupt', 'digital', 'matrix'],
+                'flip': ['flip', 'rotate', 'turn', 'reverse', 'invert'],
+                'zoom': ['zoom', 'grow', 'expand', 'magnify', 'enlarge'],
+                'fade': ['fade', 'disappear', 'vanish', 'ghost']
+            };
+
+            for (const [animation, variants] of Object.entries(animationMappings)) {
+                if (matchesPattern(prompt, variants)) {
+                    effects.push(animation);
+                    break;
+                }
+            }
+
+            const themeMappings = {
+                'fire-bg': ['fire', 'flame', 'burn', 'hot', 'lava', 'inferno', 'blaze'],
+                'ocean-bg': ['ocean', 'water', 'sea', 'wave', 'aqua', 'marine', 'deep'],
+                'space-bg': ['space', 'galaxy', 'stars', 'cosmic', 'universe', 'nebula', 'void'],
+                'galaxy-bg': ['galaxy', 'milky', 'cosmos', 'stellar', 'astral'],
+                'aurora-bg': ['aurora', 'northern lights', 'borealis', 'light show']
+            };
+
+            for (const [theme, variants] of Object.entries(themeMappings)) {
+                if (matchesPattern(prompt, variants)) {
+                    effects.push(theme);
+                    break;
+                }
+            }
+
+            if (matchesPattern(prompt, ['big', 'large', 'huge', 'giant', 'massive', 'enormous', 'grow', 'expand'])) {
+                effects.push('giant');
+            }
+            if (matchesPattern(prompt, ['small', 'tiny', 'mini', 'little', 'shrink', 'microscopic'])) {
+                effects.push('tiny');
+            }
+            if (matchesPattern(prompt, ['glow', 'neon', 'bright', 'shine', 'light', 'luminous', 'radiant'])) {
+                effects.push('neon-glow');
+            }
+            if (matchesPattern(prompt, ['blur', 'blurry', 'unfocus', 'soft', 'hazy'])) {
+                effects.push('blur-effect');
+            }
+            if (matchesPattern(prompt, ['hide', 'invisible', 'gone', 'disappear', 'vanish'])) {
+                effects.push('hidden');
+            }
+            if (matchesPattern(prompt, ['matrix', 'code', 'digital', 'cyber', 'hack'])) {
+                effects.push('matrix-effect');
+                if (settings.autoParticles) createMatrixParticles();
+            }
+
+            if (matchesPattern(prompt, ['sunny', 'sun', 'bright', 'sunshine', 'summer'])) {
+                effects.push('yellow-theme', 'neon-glow', 'pulse');
+                if (settings.autoParticles) createSunParticles();
+                responseMessage = "Bringing sunshine vibes!";
+            }
+            if (matchesPattern(prompt, ['magic', 'spell', 'wizard', 'enchant', 'mystical', 'magical'])) {
+                effects.push('purple-theme', 'portal', 'neon-glow');
+                if (settings.autoParticles) createMagicParticles();
+                responseMessage = "Casting magical enchantments!";
+            }
+            if (matchesPattern(prompt, ['teleport', 'warp', 'transport', 'beam'])) {
+                effects.push('teleport', 'galaxy-bg');
+                if (settings.autoParticles) createTeleportParticles();
+                responseMessage = "Initiating teleportation sequence!";
+            }
+            if (matchesPattern(prompt, ['morph', 'transform', 'shapeshift', 'change'])) {
+                effects.push('morph', 'rainbow-bg');
+                responseMessage = "Morphing reality itself!";
+            }
+            if (matchesPattern(prompt, ['explode', 'boom', 'blast', 'burst'])) {
+                effects.push('explode', 'fire-bg', 'shake');
+                if (settings.autoParticles) createExplosionParticles();
+                responseMessage = "BOOM! Explosive transformation!";
+            }
+            if (matchesPattern(prompt, ['tornado', 'twister', 'whirlwind', 'cyclone'])) {
+                effects.push('tornado', 'aurora-bg');
+                if (settings.autoParticles) createWindParticles();
+                responseMessage = "Whirlwind of change!";
+            }
+
+            if (matchesPattern(prompt, ['reset', 'normal', 'clear', 'default', 'stop', 'clean', 'original'])) {
+                resetAll();
+                showResponse("Reality restored to default state!", 'success');
+                return;
+            }
+
+            if (effects.length > 0) {
+                lastAction = { effects: [...currentEffects] };
+                applyEffects(effects);
+                
+                if (!responseMessage) {
+                    responseMessage = generateSmartResponse(prompt, effects, corrections);
+                }
+                
+                showResponse(responseMessage, 'success');
+                
+                if (settings.autoVoice && isListening) {
+                    speakResponse();
+                }
+            } else {
+                handleCreativeResponse(prompt);
+            }
+        }
+
+        function matchesPattern(text, patterns) {
+            return patterns.some(pattern => {
+                if (text.includes(pattern)) return true;
+                return fuzzyMatch(text, pattern);
+            });
+        }
+
+        function fuzzyMatch(text, pattern) {
+            const words = text.split(' ');
+            return words.some(word => {
+                if (word.length < 3 || pattern.length < 3) return false;
+                const distance = levenshteinDistance(word, pattern);
+                return distance <= Math.max(1, Math.floor(pattern.length * 0.3));
+            });
+        }
+
+        function levenshteinDistance(str1, str2) {
+            const matrix = [];
+            for (let i = 0; i <= str2.length; i++) {
+                matrix[i] = [i];
+            }
+            for (let j = 0; j <= str1.length; j++) {
+                matrix[0][j] = j;
+            }
+            for (let i = 1; i <= str2.length; i++) {
+                for (let j = 1; j <= str1.length; j++) {
+                    if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                        matrix[i][j] = matrix[i - 1][j - 1];
+                    } else {
+                        matrix[i][j] = Math.min(
+                            matrix[i - 1][j - 1] + 1,
+                            matrix[i][j - 1] + 1,
+                            matrix[i - 1][j] + 1
+                        );
+                    }
+                }
+            }
+            return matrix[str2.length][str1.length];
+        }
+
+        function generateSmartResponse(prompt, effects, corrections) {
+            let response = "";
+            
+            if (corrections.length > 0) {
+                response += `I understood "${corrections.join(', ')}" from your input! `;
+            }
+            
+            if (effects.length === 1) {
+                response += `Applied ${effects[0].replace('-', ' ')} effect!`;
+            } else if (effects.length > 1) {
+                response += `Combined ${effects.length} effects for an amazing transformation!`;
+            }
+            
+            if (prompt.includes('please') || prompt.includes('thank')) {
+                response += " You're so polite!";
+            }
+            if (prompt.length > 50) {
+                response += " I love detailed commands!";
+            }
+            
+            return response;
+        }
+
+        function handleCreativeResponse(prompt) {
+            const creativeFallbacks = [
+                () => {
+                    if (prompt.length > 30) {
+                        applyEffects(['rainbow-bg', 'pulse']);
+                        return "Such a detailed expression! Here's a rainbow pulse for your creativity!";
+                    }
+                },
+                () => {
+                    if (prompt.includes('!')) {
+                        applyEffects(['dance', 'yellow-theme']);
+                        if (settings.autoParticles) createConfettiParticles();
+                        return "I love your enthusiasm! Let's dance!";
+                    }
+                },
+                () => {
+                    if (prompt.includes('?')) {
+                        applyEffects(['wobble', 'purple-theme']);
+                        return "Interesting question! Here's something mysterious!";
+                    }
+                },
+                () => {
+                    if (/\d/.test(prompt)) {
+                        applyEffects(['matrix-effect', 'glitch']);
+                        if (settings.autoParticles) createMatrixParticles();
+                        return "Numbers detected! Entering digital mode!";
+                    }
+                },
+                () => {
+                    const randomEffects = [
+                        ['aurora-bg', 'float'],
+                        ['galaxy-bg', 'spin'],
+                        ['ocean-bg', 'wobble']
+                    ];
+                    const chosen = randomEffects[Math.floor(Math.random() * randomEffects.length)];
+                    applyEffects(chosen);
+                    return `"${prompt}" sounds beautiful! Here's my artistic interpretation!`;
+                }
+            ];
+
+            for (const fallback of creativeFallbacks) {
+                const result = fallback();
+                if (result) {
+                    showResponse(result, 'success');
+                    return;
+                }
+            }
+
+            applyEffects(['rainbow-bg', 'dance']);
+            if (settings.autoParticles) createStarParticles();
+            showResponse(`I may not understand "${prompt}" exactly, but it inspired something magical!`, 'suggestion');
+        }
+
+        function applyEffects(effects) {
+            const flatEffects = effects.flat();
+            currentEffects = [...flatEffects];
+
+            resetVisualEffects();
+
+            const themeEffects = flatEffects.filter(e => e.includes('-bg') || e.includes('-theme'));
+            themeEffects.forEach(effect => {
+                document.body.classList.add(effect);
+            });
+
+            const animationEffects = flatEffects.filter(e => 
+                ['spin', 'dance', 'bounce', 'shake', 'float', 'wobble', 'pulse', 'glitch', 'flip', 'teleport', 'morph', 'explode', 'lightning', 'earthquake', 'tornado', 'portal'].includes(e)
+            );
+            if (animationEffects.length > 0) {
+                const cards = document.querySelectorAll('.content-card');
+                cards.forEach(card => {
+                    animationEffects.forEach(anim => {
+                        card.classList.add(anim);
+                    });
+                });
+            }
+
+            const specialEffects = flatEffects.filter(e => 
+                ['neon-glow', 'giant', 'tiny', 'blur-effect', 'hidden', 'matrix-effect'].includes(e)
+            );
+            specialEffects.forEach(effect => {
+                const elements = document.querySelectorAll('.content-card, .header');
+                elements.forEach(el => {
+                    el.classList.add(effect);
+                });
+            });
+        }
+
+        function resetVisualEffects() {
+            document.body.className = '';
+            
+            const elements = document.querySelectorAll('.content-card, .header, .container');
+            elements.forEach(el => {
+                el.classList.forEach(className => {
+                    if (!['content-card', 'header', 'container'].includes(className)) {
+                        el.classList.remove(className);
+                    }
+                });
+            });
+
+            if (particleSystem) {
+                particleSystem.ctx.clearRect(0, 0, particleSystem.canvas.width, particleSystem.canvas.height);
+                particleSystem.particles = [];
+            }
+        }
+
+        function createConfettiParticles() {
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#ffeaa7', '#dda0dd', '#ff9ff3', '#54a0ff'];
+            createParticles(60, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: -20,
+                vx: (Math.random() - 0.5) * 4,
+                vy: Math.random() * 3 + 2,
+                size: Math.random() * 8 + 4,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                rotation: Math.random() * 360,
+                rotationSpeed: (Math.random() - 0.5) * 10,
+                life: 3000
+            }));
+        }
+
+        function createHeartParticles() {
+            createParticles(25, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: window.innerHeight + 20,
+                vx: (Math.random() - 0.5) * 2,
+                vy: -Math.random() * 3 - 1,
+                size: Math.random() * 15 + 10,
+                symbol: '💖',
+                rotation: Math.random() * 360,
+                rotationSpeed: (Math.random() - 0.5) * 5,
+                life: 4000
+            }));
+        }
+
+        function createStarParticles() {
+            createParticles(40, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                vx: (Math.random() - 0.5) * 1,
+                vy: (Math.random() - 0.5) * 1,
+                size: Math.random() * 6 + 2,
+                color: '#fff',
+                twinkle: Math.random() * 2000,
+                life: 6000
+            }));
+        }
+
+        function createFireParticles() {
+            const colors = ['#ff4757', '#ff6b35', '#ff9f43', '#ffc048', '#ff7675'];
+            createParticles(50, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: window.innerHeight,
+                vx: (Math.random() - 0.5) * 3,
+                vy: -Math.random() * 5 - 2,
+                size: Math.random() * 10 + 5,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                life: 2000
+            }));
+        }
+
+        function createBubbleParticles() {
+            createParticles(30, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: window.innerHeight + 20,
+                vx: (Math.random() - 0.5) * 2,
+                vy: -Math.random() * 2 - 1,
+                size: Math.random() * 20 + 10,
+                color: 'rgba(135, 206, 235, 0.6)',
+                life: 5000
+            }));
+        }
+
+        function createRainParticles() {
+            createParticles(80, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: -10,
+                vx: 0,
+                vy: Math.random() * 8 + 5,
+                size: 2,
+                color: '#87CEEB',
+                life: 3000
+            }));
+        }
+
+        function createSunParticles() {
+            createParticles(30, (particle, i) => ({
+                x: window.innerWidth / 2,
+                y: window.innerHeight / 2,
+                vx: (Math.random() - 0.5) * 4,
+                vy: (Math.random() - 0.5) * 4,
+                size: Math.random() * 10 + 5,
+                color: '#FFD700',
+                life: 3000
+            }));
+        }
+
+        function createMagicParticles() {
+            const colors = ['#9B59B6', '#8E44AD', '#E74C3C', '#F39C12'];
+            createParticles(40, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                vx: (Math.random() - 0.5) * 3,
+                vy: (Math.random() - 0.5) * 3,
+                size: Math.random() * 8 + 3,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                symbol: '✨',
+                life: 4000
+            }));
+        }
+
+        function createTeleportParticles() {
+            createParticles(50, (particle, i) => ({
+                x: Math.random() * window.innerWidth,
+                y: Math.random() * window.innerHeight,
+                vx: (Math.random() - 0.5) * 8,
+                vy: (Math.random() - 0.5) * 8,
+                size: Math.random() * 6 + 2,
+                color: '#00FFFF',
+                life: 2000
+            }));
+        }
+
+        function createExplosionParticles() {
+            const center = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+            createParticles(80, (particle, i) => {
+                const angle = (i / 80) * Math.PI * 2;
+                const speed = Math.random() * 8 + 5;
+                return {
+                    x: center.x,
+                    y: center.y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size: Math.random() * 8 + 4,
+                    color: ['#FF4757', '#FF6B35', '#FF9F43'][Math.floor(Math.random() * 3)],
+                    life: 2000
+                };
+            });
+        }
+
+        function createWindParticles() {
+            createParticles(60, (particle, i) => ({
+                x: -20,
+                y: Math.random() * window.innerHeight,
+                vx: Math.random() * 10 + 5,
+                vy: (Math.random() - 0.5) * 4,
+                size: Math.random() * 4 + 2,
+                color: 'rgba(255, 255, 255, 0.8)',
+                life: 3000
+            }));
+        }
+
+        function createMatrixParticles() {
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            createParticles(40, (particle, i) => ({
+                x: i * (window.innerWidth / 40),
+                y: -20,
+                vx: 0,
+                vy: Math.random() * 5 + 2,
+                char: chars[Math.floor(Math.random() * chars.length)],
+                color: '#00ff41',
+                life: 5000
+            }));
+        }
+
+        function createParticles(count, particleConfig) {
+            if (!particleSystem) return;
+
+            const { ctx, canvas } = particleSystem;
+            
+            for (let i = 0; i < count; i++) {
+                const particle = particleConfig({}, i);
+                particle.created = Date.now();
+                particleSystem.particles.push(particle);
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                particleSystem.particles = particleSystem.particles.filter(particle => {
+                    const age = Date.now() - particle.created;
+                    if (age > particle.life) return false;
+
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    
+                    if (particle.rotation !== undefined) {
+                        particle.rotation += particle.rotationSpeed;
+                    }
+
+                    ctx.save();
+                    ctx.globalAlpha = Math.max(0, 1 - age / particle.life);
+                    
+                    if (particle.symbol) {
+                        ctx.font = `${particle.size}px Arial`;
+                        ctx.textAlign = 'center';
+                        ctx.fillStyle = '#ff69b4';
+                        if (particle.rotation) {
+                            ctx.translate(particle.x, particle.y);
+                            ctx.rotate(particle.rotation * Math.PI / 180);
+                            ctx.fillText(particle.symbol, 0, 0);
+                        } else {
+                            ctx.fillText(particle.symbol, particle.x, particle.y);
+                        }
+                    } else if (particle.char) {
+                        ctx.font = `${particle.size || 14}px monospace`;
+                        ctx.fillStyle = particle.color;
+                        ctx.fillText(particle.char, particle.x, particle.y);
+                    } else {
+                        ctx.fillStyle = particle.color;
+                        ctx.beginPath();
+                        ctx.arc(particle.x, particle.y, particle.size / 2, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        if (particle.twinkle) {
+                            const twinkleIntensity = Math.sin(Date.now() / 200 + particle.twinkle) * 0.5 + 0.5;
+                            ctx.shadowColor = particle.color;
+                            ctx.shadowBlur = 10 * twinkleIntensity;
+                            ctx.fill();
+                        }
+                    }
+                    
+                    ctx.restore();
+                    
+                    return particle.y < canvas.height + 100 && particle.y > -100;
+                });
+
+                if (particleSystem.particles.length > 0) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            animate();
+        }
+
+        function toggleVoiceInput() {
+            if (!voiceRecognition) {
+                showResponse("Voice input not supported in this browser. Try Chrome or Edge!", 'error');
+                return;
+            }
+
+            if (isListening) {
+                voiceRecognition.stop();
+                updateVoiceButton(false);
+            } else {
+                voiceRecognition.start();
+                updateVoiceButton(true);
+                showResponse("Listening... Speak your command!", 'success');
+            }
+        }
+
+        function updateVoiceButton(listening) {
+            isListening = listening;
+            const btn = document.getElementById('voiceBtn');
+            if (listening) {
+                btn.textContent = 'Stop Listening';
+                btn.style.background = 'linear-gradient(45deg, #ff4757, #c44569)';
+            } else {
+                btn.textContent = 'Voice Input';
+                btn.style.background = 'linear-gradient(45deg, #ff6b6b, #ee5a52)';
+            }
+        }
+
+        function speakResponse() {
+            const message = document.getElementById('responseMessage').textContent;
+            if (!message) return;
+
+            if ('speechSynthesis' in window) {
+                const utterance = new SpeechSynthesisUtterance(message.replace(/[🌟✨🎉🔥💙😊🤔🎲🎤🔊↶🔄]/g, ''));
+                utterance.rate = 0.9;
+                utterance.pitch = 1.1;
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function randomEffect() {
+            const randomCombinations = [
+                ['rainbow-bg', 'dance', 'neon-glow'],
+                ['fire-bg', 'spin', 'giant'],
+                ['ocean-bg', 'float', 'blur-effect'],
+                ['space-bg', 'glitch', 'matrix-effect'],
+                ['aurora-bg', 'pulse', 'tiny'],
+                ['galaxy-bg', 'wobble', 'neon-glow']
+            ];
+
+            const chosen = randomCombinations[Math.floor(Math.random() * randomCombinations.length)];
+            applyEffects(chosen);
+            
+            const particleTypes = [
+                createConfettiParticles,
+                createStarParticles,
+                createHeartParticles,
+                createBubbleParticles
+            ];
+            if (settings.autoParticles) {
+                const randomParticle = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+                randomParticle();
+            }
+
+            showResponse("Random magic applied! Every surprise is unique!", 'success');
+        }
+
+        function undoLastAction() {
+            if (lastAction) {
+                currentEffects = lastAction.effects;
+                applyEffects(currentEffects);
+                showResponse("Previous state restored!", 'success');
+                lastAction = null;
+            } else {
+                showResponse("Nothing to undo!", 'suggestion');
+            }
+        }
+
+        function resetAll() {
+            lastAction = { effects: [...currentEffects] };
+            currentEffects = [];
+            resetVisualEffects();
+            document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            showResponse("Reality reset to default state!", 'success');
+        }
+
+        function showResponse(message, type = 'success') {
+            const section = document.getElementById('responseSection');
+            const messageEl = document.getElementById('responseMessage');
+            
+            messageEl.textContent = message;
+            section.className = `response-section fade-in ${type}`;
+            section.style.display = 'block';
+            
+            setTimeout(() => {
+                if (section.style.display !== 'none') {
+                    section.style.opacity = '0.7';
+                }
+            }, 8000);
+        }
+
+        function hideSuggestions() {
+            document.getElementById('suggestions').style.display = 'none';
+        }
+
+        function setupInputSuggestions() {
+            const input = document.getElementById('promptInput');
+            const suggestions = document.getElementById('suggestions');
+            
+            const commonCommands = [
+                'make it rainbow and dance',
+                'I feel happy',
+                'fire storm with spinning',
+                'ocean vibes and floating',
+                'galaxy space mode',
+                'glow with neon effects',
+                'party time with confetti',
+                'calm and peaceful',
+                'red and angry',
+                'blue ocean waves',
+                'matrix digital mode',
+                'tiny and cute',
+                'giant and powerful',
+                'reset to normal'
+            ];
+
+            input.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                if (value.length < 2) {
+                    hideSuggestions();
+                    return;
+                }
+
+                const matches = commonCommands.filter(cmd => 
+                    cmd.toLowerCase().includes(value) || 
+                    fuzzyMatch(value, cmd.toLowerCase())
+                ).slice(0, 5);
+
+                if (matches.length > 0) {
+                    suggestions.innerHTML = matches.map(match => 
+                        `<div class="suggestion-item" onclick="selectSuggestion('${match}')">${match}</div>`
+                    ).join('');
+                    suggestions.style.display = 'block';
+                } else {
+                    hideSuggestions();
+                }
+            });
+
+            input.addEventListener('blur', () => {
+                setTimeout(hideSuggestions, 200);
+            });
+        }
+
+        function selectSuggestion(suggestion) {
+            const input = document.getElementById('promptInput');
+            input.value = suggestion;
+            input.focus();
+            hideSuggestions();
+        }
+
+        document.getElementById('promptInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                executePrompt();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initBackgroundParticles();
+            initParticleSystem();
+            initVoiceRecognition();
+            setupInputSuggestions();
+            initGestureRecognition();
+            initKeyboardShortcuts();
+            
+            const header = document.querySelector('.header');
+            const settingsBtn = document.createElement('button');
+            settingsBtn.innerHTML = '⚙️';
+            settingsBtn.className = 'action-btn';
+            settingsBtn.style.position = 'absolute';
+            settingsBtn.style.top = '20px';
+            settingsBtn.style.left = '20px';
+            settingsBtn.onclick = toggleSettings;
+            header.appendChild(settingsBtn);
+            
+            setTimeout(() => {
+                showResponse("Welcome to the Ultimate Smart Prompt Experience! Try typing anything - I understand it all!", 'success');
+            }, 1000);
+        });
+    </script>
+
+</body></html>

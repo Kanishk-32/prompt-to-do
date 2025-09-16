@@ -1,0 +1,89 @@
+🎭 Emotions
+
+happy, joy, excited, awesome → Bounce, yellow glow, cheerful particles.
+
+sad, lonely, blue → Ocean theme, floating, rain particles.
+
+angry, mad, furious → Fire background, shaking, red glow.
+
+calm, relax, peaceful → Green theme, floating, bubbles.
+
+party, celebrate, dance → Rainbow, neon, confetti.
+
+🎨 Colors & Themes
+
+red, blue, green, yellow, purple, pink, orange, black, white
+
+rainbow, fire, ocean, space, galaxy, aurora
+
+sunny, magic, teleport, morph, explode, tornado
+
+✨ Animations
+
+spin, rotate, twirl
+
+dance, groove, boogie
+
+bounce, jump
+
+shake, quake, shiver
+
+float, levitate
+
+wobble, jiggle, sway
+
+pulse, heartbeat
+
+glitch, matrix
+
+flip, zoom, fade
+
+🔮 Special Effects
+
+giant, huge, massive → Scale up
+
+tiny, mini → Scale down
+
+glow, neon, shine → Neon glow
+
+blur, blurry, hazy → Blur filter
+
+hide, invisible, vanish → Disappear
+
+matrix, cyber, hack → Digital green rain effect
+
+🌀 Reset & System
+
+reset, normal, clear, default → Restore to default
+
+party rainbow dance (shortcut for full party mode)
+
+⚡ Besides typed commands, the app also supports:
+
+Voice input (say commands aloud).
+
+Gestures:
+
+Swipe right = Next theme
+
+Swipe left = Random effect
+
+Swipe down = Reset
+
+Swipe up = Party mode
+
+Keyboard shortcuts:
+
+R = Random effect (Ctrl+R = Reset)
+
+T = Cycle themes
+
+V = Voice input toggle
+
+H = History panel
+
+Ctrl+S = Settings
+
+Esc = Reset
+
+Ctrl+Space = Focus input
